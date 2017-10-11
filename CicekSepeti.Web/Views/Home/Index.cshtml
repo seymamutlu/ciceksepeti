@@ -1,0 +1,59 @@
+﻿@model CicekSepeti.Web.ViewModels.BouquetsViewModel
+
+@{
+    ViewBag.Title = "Home Page";
+}
+<h2>Buketler</h2>
+@if (Model.Bouquets != null)
+{
+    <table class="table">
+        <tr>
+            <th>Buket Çeşidi</th>
+            <th>Boyut</th>
+            <th>İçerik</th>
+            <th>Fiyat(TL)</th>
+        </tr>
+
+        @foreach (var item in Model.Bouquets)
+        {
+            //string selectedRow = "";
+            //if (item.ID == ViewBag.InstructorID)
+            //{
+            //    selectedRow = "success";
+            //}
+            <tr class="">
+                <td rowspan="4" style="vertical-align: middle;">
+                    @item.BouquetName
+                </td>
+                <td style="display: none;"></td>
+
+                <td style="display: none;"></td>
+
+                <td style="display: none;"></td>
+            </tr>
+            foreach (var bouquet in item.SizeInBouquet)
+            {
+                <tr class="">
+                    <td>
+                        @bouquet.Size
+                    </td>
+                    <td>
+                        @foreach (var flower in bouquet.FlowerListInBouquet)
+                        {
+                            @Html.Raw(flower.FlowerCount + " adet " + flower.FlowerName)
+                            <br/>
+                        }
+                    </td>
+                    <td>
+                        @bouquet.Price
+                    </td>
+                </tr>
+            }
+        }
+
+    </table>
+}
+else
+{
+    @Html.Raw("Kayıtlı buket bulunamadı.")
+}

@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="CicekSepeti.Web.DataAccess.CicekSepetiDbContext-Web.config Connection String" description="CicekSepeti.Web.DataAccess.CicekSepetiDbContext Connection String used in web.config by the application to access the database." defaultValue="CicekSepeti.Web.DataAccess.CicekSepetiDbContext_ConnectionString" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="C:\\Users\\seyma\\source\\repos\\CicekSepeti\\CicekSepeti\.Web\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='CicekSepeti.Web.DataAccess.CicekSepetiDbContext']/@connectionString" />
+  </parameter>
+</parameters>

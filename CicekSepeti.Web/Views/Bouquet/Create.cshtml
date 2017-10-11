@@ -1,0 +1,355 @@
+﻿@using CicekSepeti.Web.ViewModels
+@model CicekSepeti.Web.ViewModels.BouquetViewModel
+
+@{
+    ViewBag.Title = "Yeni Buket Ekle";
+}
+
+<h2></h2>
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Buket Detayları</h4>
+        <hr/>
+        @Html.ValidationSummary(true, "", new {@class = "text-danger"})
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BouquetName, new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.BouquetName, new {htmlAttributes = new {@class = "form-control", required = "required"}})
+                @Html.ValidationMessageFor(model => model.BouquetName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        @for (var i = 0; i < 3; i++)
+        {
+            <div class="col-md-4">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SizeInBouquet[i].Size, new {@class = "control-label col-md-2"})
+                    <div class="col-md-10">
+                        @Html.EnumDropDownListFor(model => model.SizeInBouquet[i].Size, Model.SizeInBouquet[i].Size.ToString(), new {@class = "form-control", disabled = "disabled"})
+                        @Html.ValidationMessageFor(model => model.SizeInBouquet[i].Size, "", new {@class = "text-danger"})
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SizeInBouquet[i].Price, new {@class = "control-label col-md-2"})
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.SizeInBouquet[i].Price, new {htmlAttributes = new {@class = "form-control"}})
+                        @Html.ValidationMessageFor(model => model.SizeInBouquet[i].Price, "", new {@class = "text-danger"})
+                    </div>
+                </div>
+                <br/>
+                <div class="widget-header">
+                    <h4 class="title">Buket İçeriği</h4>
+                </div>
+                <div class="control-group">
+                    @*@Html.LabelFor(l => l.FlowerList, new { @class = "control-label" })*@
+                    <div class="controls">
+                        @Html.Label("Çiçek Adı", "Çiçek Adı", new {@class = "control-label"})
+                        @Html.DropDownList("FlowerId", new SelectList(Model.FlowerList, "Id", "Name", "Çiçek Seçiniz"), new {@class = "form-control", name = "flowerInput_" + i, id = "flowerInput_" + i})
+                        @Html.Label("Çiçek Adeti", new {@class = "control-label"})
+                        @Html.Editor("FlowerCount", new {htmlAttributes = new {@class = "form-control", name = "flowerCount_" + i, id = "flowerCount_" + i}})
+
+                        @*<input type="text" class="autocomplete location-select span8" name="flowerInput" id="flowerInput" />*@
+                        @*<input class="autocomplete-Hidden hidden" name="flowerInputHidden" id="flowerInputHidden" />*@
+                        <br/>
+                        <button id="addFlower_@i" class="btn btn-primary" style="float: right;" type="button">Çiçek Ekle <i class="icon-plus icon-white"></i></button>
+                        <br/>
+
+                    </div>
+                    <hr/>
+
+                    @*<ul id="flower_area_@i">
+                        @if (@Model.SizeInBouquet[i].FlowerListInBouquet != null)
+                        {
+                            foreach (var rest in @Model.SizeInBouquet[i].FlowerListInBouquet)
+                            {
+                                var flowerId = rest.FlowerId;
+                                var flowerName = rest.Flower.Name;
+                                var flowerCount = rest.FlowerCount;
+                                <li id="flower_@flowerId" data-id="@flowerId" class="flower_label"> <span class="close delete_flower"><i class="icon-remove-circle"></i></span>@flowerName</li>
+
+                            }
+                        }
+                    </ul>*@
+                    <table class="table" id="flowers_@i">
+                        <thead>
+                        <tr>
+                            <th>
+                                @Html.Raw("Çiçek Adı")
+                            </th>
+                            <th>
+                                @Html.Raw("Çiçek Adeti")
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+
+                        <tbody id="flower_area_@i">
+                        @for (var j = 0; j < Model.SizeInBouquet[i].FlowerListInBouquet.Count(); j++)
+                        {
+        @*@Html.Partial("_FlowerDetails", item)*@
+
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(m => m.SizeInBouquet[i].FlowerListInBouquet[j].Flower.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(m => m.SizeInBouquet[i].FlowerListInBouquet[j].FlowerCount)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Sil", "Delete", new {id = Model.SizeInBouquet[i].FlowerListInBouquet[j].FlowerId})
+                                </td>
+                            </tr>
+                        }
+                        @*@if (Model.SizeInBouquet[i].FlowerListInBouquet.Count == 0)
+                        {
+                            <tr>
+                                @Html.Raw("Kayıtlı çiçek bulunmamaktadır.")
+                            </tr>
+                        }*@
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+        }
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Kaydet" class="btn btn-success" style="float: right;"/>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Listeye Geri Dön", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+
+        $(document).ready(function() {
+
+
+            $("#addFlower_0").on("click",
+                function() {
+                    @{
+                        Model.SizeInBouquet[0].FlowerListInBouquet.Add(new FlowerItemInBouquet());
+                    }
+                    var flowerId = $("#flowerInput_0 option:selected").val();
+                    var flowerName = $("#flowerInput_0 option:selected").text();
+                    var flowerCount = $("#flowerCount_0").val();
+                    var rowCount = $('#flowers_0 > tbody tr').length;
+
+                    if (flowerId != "") {
+
+                        var exist = $('#flowers_0 > tbody tr td:contains(' + flowerName + ')').length;
+
+                        if (exist < 1) {
+                            $("#flower_area_0").append("<tr id = 'flower_" +
+                                flowerId +
+                                "' data-id='" +
+                                flowerId +
+                                "'> <td><input name='SizeInBouquet[0].FlowerListInBouquet.Index' type='hidden' value='" +
+                                rowCount +
+                                "' ><input type='hidden' name='" +
+                                "SizeInBouquet[0].FlowerListInBouquet[" +
+                                rowCount +
+                                "].FlowerId" +
+                                "' value='" +
+                                flowerId +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[0].FlowerListInBouquet[" +
+                                rowCount +
+                                "].FlowerCount" +
+                                "' value='" +
+                                flowerCount +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[0].FlowerListInBouquet[" +
+                                rowCount +
+                                "].Flower.Name" +
+                                "' value='" +
+                                flowerName +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[0].FlowerListInBouquet[" +
+                                rowCount +
+                                "].Flower.Id" +
+                                "' value='" +
+                                flowerId +
+                                "'/>" +
+                                flowerName +
+                                "</td><td>" +
+                                flowerCount +
+                                "</td><td><a data-id='" +
+                                flowerId +
+                                "' data-parent-id='" +
+                                "0" +
+                                "'class='" +
+                                "delete_flower" +
+                                "'>Sil</a></td></tr>");
+                        } else {
+                            alert('Lütfen aynı çiçeği birden çok kez girmeyiniz!');
+                        }
+
+                    } else {
+                        alert("@Html.Raw("Lütfen çiçek seçiniz!")");
+                    }
+
+                });
+            $("#addFlower_1").on("click",
+                function() {
+                    @{
+                        Model.SizeInBouquet[1].FlowerListInBouquet.Add(new FlowerItemInBouquet());
+                    }
+                    var flowerId = $("#flowerInput_1 option:selected").val();
+                    var flowerName = $("#flowerInput_1 option:selected").text();
+                    var flowerCount = $("#flowerCount_1").val();
+                    var rowCount = $('#flowers_1 > tbody tr').length;
+
+
+                    if (flowerId != "") {
+                        var exist = $('#flowers_1 > tbody tr td:contains(' + flowerName + ')').length;
+
+                        if (exist < 1) {
+                            $("#flower_area_1").append("<tr id = 'flower_" +
+                                flowerId +
+                                "' data-id='" +
+                                flowerId +
+                                "'> <td><input name='SizeInBouquet[1].FlowerListInBouquet.Index' type='hidden' value='" +
+                                rowCount +
+                                "' ><input type='hidden' name='" +
+                                "SizeInBouquet[1].FlowerListInBouquet[" +
+                                rowCount +
+                                "].FlowerId" +
+                                "' value='" +
+                                flowerId +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[1].FlowerListInBouquet[" +
+                                rowCount +
+                                "].FlowerCount" +
+                                "' value='" +
+                                flowerCount +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[1].FlowerListInBouquet[" +
+                                rowCount +
+                                "].Flower.Name" +
+                                "' value='" +
+                                flowerName +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[1].FlowerListInBouquet[" +
+                                rowCount +
+                                "].Flower.Id" +
+                                "' value='" +
+                                flowerId +
+                                "'/>" +
+                                flowerName +
+                                "</td><td>" +
+                                flowerCount +
+                                "</td><td><a data-id='" +
+                                flowerId +
+                                "' data-parent-id='" +
+                                "1" +
+                                "'class='" +
+                                "delete_flower" +
+                                "'>Sil</a></td></tr>");
+                        }
+                        //var exist = $('ul li:contains(' + flowerName + ')').length;
+                        //if (exist <= 1)
+                        //{
+                        //    $("#flower_area_1").append("<li id='flower_" + flowerId + "' data-id='" + flowerId + "' class='flower_label'> <span class='close delete_flower'><i class='icon-remove-circle'></i></span>" + flowerName + "</li>");
+                        //}
+                        else {
+                            alert('Lütfen aynı çiçeği birden çok kez girmeyiniz!');
+                        }
+
+                    } else {
+                        alert("@Html.Raw("Lütfen çiçek seçiniz!")");
+                    }
+
+                });
+            $("#addFlower_2").on("click",
+                function() {
+                    @{
+                        Model.SizeInBouquet[2].FlowerListInBouquet.Add(new FlowerItemInBouquet());
+                    }
+                    var flowerId = $("#flowerInput_2 option:selected").val();
+                    var flowerName = $("#flowerInput_2 option:selected").text();
+                    var flowerCount = $("#flowerCount_2").val();
+                    var rowCount = $('#flowers_2 > tbody tr').length;
+
+                    if (flowerId != "") {
+
+                        var exist = $('#flowers_2 > tbody tr td:contains(' + flowerName + ')').length;
+
+                        if (exist < 1) {
+                            $("#flower_area_2").append("<tr id = 'flower_" +
+                                flowerId +
+                                "' data-id='" +
+                                flowerId +
+                                "'> <td><input name='SizeInBouquet[2].FlowerListInBouquet.Index' type='hidden' value='" +
+                                rowCount +
+                                "' ><input type='hidden' name='" +
+                                "SizeInBouquet[2].FlowerListInBouquet[" +
+                                rowCount +
+                                "].FlowerId" +
+                                "' value='" +
+                                flowerId +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[2].FlowerListInBouquet[" +
+                                rowCount +
+                                "].FlowerCount" +
+                                "' value='" +
+                                flowerCount +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[2].FlowerListInBouquet[" +
+                                rowCount +
+                                "].Flower.Name" +
+                                "' value='" +
+                                flowerName +
+                                "'/><input type='hidden' name='" +
+                                "SizeInBouquet[2].FlowerListInBouquet[" +
+                                rowCount +
+                                "].Flower.Id" +
+                                "' value='" +
+                                flowerId +
+                                "'/>" +
+                                flowerName +
+                                "</td><td>" +
+                                flowerCount +
+                                "</td><td><a data-id='" +
+                                flowerId +
+                                "' data-parent-id='" +
+                                "2" +
+                                "'class='" +
+                                "delete_flower" +
+                                "'>Sil</a></td></tr>");
+                        } else {
+                            alert('Lütfen aynı çiçeği birden çok kez girmeyiniz!');
+                        }
+
+                    } else {
+                        alert("@Html.Raw("Lütfen çiçek seçiniz!")");
+                    }
+
+                });
+
+            $(document).on("click",
+                ".delete_flower",
+                function() {
+                    var flowerId = $(this).data("id");
+                    var sizeId = $(this).data("parent-id");
+                    $('#flowers_' + sizeId + " tbody #flower_" + flowerId).remove();
+                });
+
+
+        });
+    </script>
+}

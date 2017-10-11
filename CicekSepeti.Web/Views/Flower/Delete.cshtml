@@ -1,0 +1,57 @@
+﻿@model CicekSepeti.Model.Flower
+
+@{
+    ViewBag.Title = "Sil";
+}
+
+@*<h2>Sil</h2>*@
+
+<h3 style="color: brown;">Silmek istediğinizden emin misiniz?</h3><br/>
+<div>
+    <h4>Çiçek Bilgileri</h4>
+    <hr/>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsFlowering)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsFlowering)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsThorny)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsThorny)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsLeafy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsLeafy)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Sil" class="btn btn-danger" style="float: right;"/>
+            @Html.ActionLink("Listeye Geri Dön", "Index")
+        </div>
+    }
+</div>
